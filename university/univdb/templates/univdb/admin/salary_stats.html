@@ -1,0 +1,10 @@
+<table style="width:400px">
+ {% for r in rows %}
+    <tr>
+        <th>{{ r.dept_name }}</th>
+        <th>{{ r.min_salary }}</th>
+        <th>{{ r.max_salary }}</th>
+        <th>{{ r.avg_salary }}</th>
+    </tr>
+ {% endfor %}
+</table>
