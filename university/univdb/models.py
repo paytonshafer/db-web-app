@@ -50,10 +50,10 @@ class Instructor(models.Model):
         managed = False
         db_table = 'instructor'
 
-
+'''
 class Prereq(models.Model):
-    course = models.ForeignKey(Course, models.DO_NOTHING)
-    prereq = models.ForeignKey(Course, models.DO_NOTHING)
+    course = models.ForeignKey(Course, models.DO_NOTHING, related_name='course')
+    prereq = models.ForeignKey(Course, models.DO_NOTHING, related_name='prereq')
 
     class Meta:
         managed = False
@@ -62,7 +62,7 @@ class Prereq(models.Model):
 
 
 class Section(models.Model):
-    course = models.ForeignKey(Course, models.DO_NOTHING)
+    course = models.ForeignKey(Course, models.DO_NOTHING, related_name='course')
     sec_id = models.CharField(max_length=4)
     semester = models.IntegerField()
     year = models.IntegerField()
@@ -101,3 +101,4 @@ class Teaches(models.Model):
         managed = False
         db_table = 'teaches'
         unique_together = (('course', 'sec', 'semester', 'year', 'teacher'),)
+'''
