@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Admin</h1>
+<h2>F1: Create a list of professors sorted by one of the following criteria</h2>
+
+<h3>Sort by:</h3>
+
+<h4>Click on the Sort button to submit the form.</h4>
+
+<form action="{% url 'instr_ordered' %}" method="get">
+    <input type="radio" id="sortByName" name="sort_by" value="name" checked>
+    <label for="sortByName">Name</label><br>
+    <input type="radio" id="sortByDept" name="sort_by" value="dept">
+    <label for="sortByDept">Department</label><br>
+    <input type="radio" id="sortBySalary" name="sort_by" value="salary">
+    <label for="sortBySalary">Salary</label><br>
+    <br>
+    <input type="submit" value="Sort">
+</form>
+
+<br> <br> <br>
+<h2>F2: Create a table of min/max/average salaries by department</h2>
+<a href="{% url 'salary_stats' %}"><button>View Salary Statistics</button></a>
+
+</body>
+</html>

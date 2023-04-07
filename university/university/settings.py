@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'university',
         'USER': 'root',
-        'PASSWORD': 'mypassword', #change to your password to run
+        'PASSWORD': 'mypassword',  # change to your password to run
         'HOST': 'localhost'
     }
 }
