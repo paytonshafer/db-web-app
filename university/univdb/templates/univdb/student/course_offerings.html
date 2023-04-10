@@ -1,0 +1,28 @@
+<h1>Courses offered in {{sem}} of {{year}}</h1>
+<table style="width:600px">
+    <tr>
+        <th> Dept </th>
+        <th> ID </th>
+        <th> Name </th>
+        <th> Section </th>
+        <th> Building </th>
+        <th> Credits </th>
+        <th> Credits </th>
+       </tr>
+    {% for r in rows %}
+       <tr>
+        <th>{{ r.0 }}</th>
+        <th>{{ r.1 }}</th>
+        <th>{{ r.2 }}</th>
+        <th>{{ r.3 }}</th>
+        <th>{{ r.4 }}</th>
+        <th>{{ r.5 }}</th>
+        <th>{{ r.6 }}</th>
+       </tr>
+    {% endfor %}
+</table>
+{% if not rows%}
+       <h4>&nbsp;&nbsp;&nbsp; No courses offered in {{sem}} of {{year}}</h4>
+{% endif %}
+<br> <br>
+<input type=button value="Back" onClick="javascript:history.go(-1);">
