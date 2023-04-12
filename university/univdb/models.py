@@ -141,6 +141,72 @@ class Instructor(models.Model):
         managed = False
         db_table = 'instructor'
 
+
+class Teaches(models.Model):
+    course_id = models.CharField(primary_key=True, max_length=8)
+    sec_id = models.CharField(max_length=8, null=False)
+    semester = models.IntegerField(null=False)
+    year = models.IntegerField(null=False)
+    teacher_id = models.IntegerField(null=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['course_id', 'sec_id', 'semester', 'year', 'teacher_id'], name='teaches_primary_key'
+            )
+        ]
+        managed = False
+        db_table = 'teaches'
+
+
+class Takes(models.Model):
+    student_id = models.IntegerField(primary_key=True)
+    course_id = models.CharField(max_length=8, null=False)
+    sec_id = models.CharField(max_length=8, null=False)
+    semester = models.IntegerField(null=False)
+    year = models.IntegerField(null=False)
+    grade = models.CharField(max_length=8, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['student_id', 'course_id', 'sec_id', 'semester', 'year'], name='takes_primary_key'
+            )
+        ]
+        managed = False
+        db_table = 'takes'
+
+
+class ResearchFunds(models.Model):
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=20, null=False)
+    funds = models.IntegerField(null=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['id', 'title'], name='researchfunds_primary_key'
+            )
+        ]
+        managed = False
+        db_table = 'researchfunds'
+
+
+class Published(models.Model):
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=20, null=False)
+    published = models.IntegerField(null=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['id', 'title'], name='published_primary_key'
+            )
+        ]
+        managed = False
+        db_table = 'published'
+
+
 class Student(models.Model):
     student_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=20, blank=True, null=True)
