@@ -24,5 +24,20 @@
 <h2>F2: Create a table of min/max/average salaries by department</h2>
 <a href="{% url 'salary_stats' %}"><button>View Salary Statistics</button></a>
 
+<br><br><br>
+<h2>F3: Show the number of courses and students a professor teaches</h2>
+<form action="{% url 'professor_performance' %}" method="get">
+    <label for="Name">Name:</label>
+    <input type="text" id="Name" name="Name">
+    <br>
+    <label for="Name">Year:</label>
+    <input type="text" id="Year" name="Year">
+    <br>
+    <label for="Name">Semester:</label>
+    <input type="text" id="Semester" name="Semester">
+    <br>
+    <input type="submit" value="Submit">
+</form>
+
 </body>
 </html>

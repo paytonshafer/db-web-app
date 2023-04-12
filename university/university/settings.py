@@ -78,10 +78,10 @@ DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.mysql',
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'university',
-        'USER': 'root',
-        'PASSWORD': 'mypassword',  # change to your password to run
-        'HOST': 'localhost'
+        'NAME': 'university_group_b',
+        'USER': 'group_b',
+        'PASSWORD': 'PayJefJosLog',  # change to your password to run
+        'HOST': '128.153.13.175'
     }
 }
 
