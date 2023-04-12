@@ -1,0 +1,20 @@
+<h1>F4</h1>
+<table style="width:400px">
+    <tr>
+        <th>course_id</th>
+        <th>sec_id</th>
+        <th>semester</th>
+        <th>year</th>
+        <th>number_of_students_enrolled</th>
+    </tr>
+ {% for r in rows %}
+    <tr>
+        <th>{{ r.0 }}</th>
+        <th>{{ r.1 }}</th>
+        <th>{{ r.2 }}</th>
+        <th>{{ r.3 }}</th>
+        <th>{{ r.4 }}</th>
+    </tr>
+ {% endfor %}
+</table>
+<input type=button value="Back" onClick="javascript:history.go(-1);">
