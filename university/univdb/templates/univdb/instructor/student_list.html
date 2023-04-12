@@ -1,0 +1,16 @@
+<h1>F5</h1>
+<table style="width:400px">
+    <tr>
+        <th>name</th>
+        <th>semester</th>
+        <th>year</th>
+    </tr>
+ {% for r in rows %}
+    <tr>
+        <th>{{ r.0 }}</th>
+        <th>{{ r.1 }}</th>
+        <th>{{ r.2 }}</th>
+    </tr>
+ {% endfor %}
+</table>
+<input type=button value="Back" onClick="javascript:history.go(-1);">

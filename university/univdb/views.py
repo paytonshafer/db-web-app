@@ -6,7 +6,7 @@ import mysql.connector
 from django.http import HttpResponse
 from django.template import loader
 
-from .models import Dept, Instructor
+from .models import Dept, Instructor, Student
 
 
 mydb = mysql.connector.connect(
@@ -54,7 +54,7 @@ def login(request):
 
 
 def instructor(request):
-    return HttpResponse("Hello, world.\n")
+    return render(request, 'univdb/instructor/home.html')
 
 
 def index_admin(request):  # Admin
@@ -96,3 +96,48 @@ def salary_stats(request):  # Admin
         'rows': data,
     }
     return HttpResponse(template.render(context, request))
+
+# Feature 4
+def course_prof(request): # instructor
+    # request from F4 text field
+    name = request.GET.get("proflname")
+
+    # gets the first query in query set of the id of the professor given the last name
+    prof_id = Instructor.objects.filter(name = name).values('id').first()
+
+    # transform id into a string
+    prof_id = str(prof_id.get('id'))
+
+    # does the SQL selection given the instructor
+    sql = 'SELECT teaches.course_id, teaches.sec_id, teaches.semester, teaches.year, COUNT(student_id) FROM teaches INNER JOIN takes on ( takes.course_id = teaches.course_id AND takes.semester = teaches.semester AND takes.sec_id = teaches.sec_id AND takes.year = teaches.year ) WHERE teacher_id = "' + prof_id + '" GROUP BY course_id, sec_id, semester, year;'
+
+    mycursor.execute(sql)  # execute sql query on db instance
+    data = mycursor.fetchall()  # get all results
+
+    context = {
+        'rows': data,
+    }
+    return render(request, 'univdb/instructor/course_prof.html', context=context)
+
+# Feature 5
+def student_list(request): # instructor
+    # request from F5 textfield
+    name = request.GET.get("proflname")
+
+    # gets the first query in query set of the id of the professor given the last name
+    prof_id = Instructor.objects.filter(name=name).values('id').first()
+
+    # transform id into a string
+    prof_id = str(prof_id.get('id'))
+
+    # does the SQL selection given the instructor
+    sql = 'SELECT student.name, teaches.semester, teaches.year FROM teaches INNER JOIN takes on (  takes.course_id = teaches.course_id AND takes.semester = teaches.semester AND takes.sec_id = teaches.sec_id AND takes.year = teaches.year) INNER JOIN student on takes.student_id = student.student_id WHERE teacher_id = "' + prof_id + '";'
+
+    mycursor.execute(sql)  # execute sql query on db instance
+    data = mycursor.fetchall()  # get all results
+
+    context = {
+        'rows': data,
+    }
+
+    return render(request, 'univdb/instructor/student_list.html', context=context)
