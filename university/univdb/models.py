@@ -206,3 +206,13 @@ class Published(models.Model):
         managed = False
         db_table = 'published'
 
+
+class Student(models.Model):
+    student_id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=20, blank=True, null=True)
+    dept_name = models.ForeignKey(Dept, models.DO_NOTHING, db_column='dept_name', blank=True, null=True)
+    total_credits = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'student'

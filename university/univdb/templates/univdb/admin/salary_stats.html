@@ -1,4 +1,11 @@
+<h1>Salary Stats</h1>
 <table style="width:400px">
+    <tr>
+        <th>dept_name</th>
+        <th>min_salary</th>
+        <th>max_salary</th>
+        <th>avg_salary</th>
+    </tr>
  {% for r in rows %}
     <tr>
         <th>{{ r.dept_name }}</th>
@@ -8,3 +15,4 @@
     </tr>
  {% endfor %}
 </table>
+<input type=button value="Back" onClick="javascript:history.go(-1);">

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Student</h1>
+<h2>F6: Create a list of course sections offered by dept in a given year and semester</h2>
+
+<h3>Choose year and semester:</h3>
+
+<h4>Click on the Generate button to submit the form.</h4>
+
+<form action="{% url 'courses' %}" method="get">
+    <select name="year" id="year">
+        <option value="2019">2019</option>
+        <option value="2020">2020</option>
+    </select>
+    <select name="semester" id="semester">
+        <option value="fall">Fall</option>
+        <option value="spring">Spring</option>
+    </select>
+    <br>
+    <input type="submit" value="Generate">
+</form>
+
+</body>
+</html>

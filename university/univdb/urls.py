@@ -9,5 +9,8 @@ urlpatterns = [
     path('admin/professor_performance', views.professor_performance, name='professor_performance'),
     path('', views.login, name='login'),  # login page
     path('instructor/', views.instructor, name='instructor'),
-    path('student/', views.student, name='student'),
+    path('instructor/course_prof', views.course_prof, name='course_prof'),
+    path('instructor/student_list', views.student_list, name='student_list'),
+    path('student/', views.index_student, name='student'),
+    path('student/courses', views.course_offerings, name='courses'),
 ]

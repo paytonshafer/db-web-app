@@ -81,7 +81,8 @@ DATABASES = {
         'NAME': 'university_group_b',
         'USER': 'group_b',
         'PASSWORD': 'PayJefJosLog',  # change to your password to run
-        'HOST': '128.153.13.175'
+        'HOST': '128.153.13.175',
+        'PORT': 3306
     }
 }
 
