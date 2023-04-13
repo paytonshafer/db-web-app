@@ -56,9 +56,8 @@ def handle_login(request):
     password = request.GET.get('psw')
 
     user = authenticate(username=username, password=password)
-    group = str(user.groups.all()[0])
-    print(user.groups.all()[0])
     if user is not None:
+        group = str(user.groups.all()[0])
         if group == 'admin':
             response = redirect('/univdb/admin')
         if group == 'instructor':
@@ -66,7 +65,7 @@ def handle_login(request):
         if group == 'student':
             response = redirect('/univdb/student')
     else:
-        response = ''
+        response = redirect('/univdb/')
         
     return response
         
