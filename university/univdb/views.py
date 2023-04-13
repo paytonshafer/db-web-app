@@ -1,5 +1,6 @@
+from django.contrib.auth import authenticate
 from django.db.models import Min, Max, Avg
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import mysql.connector
 
 # Create your views here.
@@ -49,8 +50,32 @@ def course_offerings(request):
 
     return HttpResponse(template.render(context, request))
 
+#TODO: Route everything properly
+def handle_login(request):
+    username = request.GET.get('uname')
+    password = request.GET.get('psw')
+
+    user = authenticate(username=username, password=password)
+    group = str(user.groups.all()[0])
+    print(user.groups.all()[0])
+    if user is not None:
+        if group == 'admin':
+            response = redirect('/univdb/admin')
+        if group == 'instructor':
+            response = redirect('/univdb/instructor?user=' + username)
+        if group == 'student':
+            response = redirect('/univdb/student')
+    else:
+        response = ''
+        
+    return response
+        
+
 def login(request):
-    return HttpResponse("Hello, world.\n")
+    template = loader.get_template('univdb/login.html')
+    context = {}
+
+    return HttpResponse(template.render(context, request))
 
 
 def instructor(request):
