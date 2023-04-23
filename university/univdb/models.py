@@ -181,6 +181,10 @@ class ResearchFunds(models.Model):
     id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=20, null=False)
     funds = models.IntegerField(null=False)
+    agency = models.CharField(max_length=20)
+    beg_date = models.DateField()
+    end_date = models.DateField()
+    manager_approval = models.CharField(max_length=20)
 
     class Meta:
         constraints = [
@@ -196,6 +200,9 @@ class Published(models.Model):
     id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=20, null=False)
     published = models.IntegerField(null=False)
+    year = models.IntegerField()
+    publication_venue = models.CharField(max_length=20)
+    publication_date = models.DateField()
 
     class Meta:
         constraints = [
