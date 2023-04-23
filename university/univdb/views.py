@@ -118,28 +118,30 @@ def professor_performance(request):  # Admin
     # sum of courses professor teaches
     count_class = len(prof_course_data)
 
-    # establish variable used in for loop
-    x = 0
-    prof_courses = prof_course_data.values()[x]
-    student_course_data = (Takes.objects.filter(
-        course_id=prof_courses['course_id'],
-        semester=prof_courses['semester'],
-        year=prof_courses['year'])
-    )
-
-    # retrieve all students taking professor's courses
-    for i in prof_course_data:
-        x = x + 1
+    # if statement to prevent going out of bounds
+    if count_class == 0:
+        count_students = 0
+    else:
+        x = 0
+        # establish variable used in for loop
+        prof_courses = prof_course_data.values()[x]
+        student_course_data = (Takes.objects.filter(
+            course_id=prof_courses['course_id'],
+            semester=prof_courses['semester'],
+            year=prof_courses['year'])
+        )
+        # retrieve all students taking professor's courses
+        for i in prof_course_data:
+            x = x + 1
         if x < count_class:
             prof_courses = prof_course_data.values()[x]
-            student_course_data = student_course_data | (Takes.objects.filter(
-                course_id=prof_courses['course_id'],
-                semester=prof_courses['semester'],
-                year=prof_courses['year'])
-            )
-
-    # sum of students professor teaches
-    count_students = len(student_course_data)
+        student_course_data = student_course_data | (Takes.objects.filter(
+            course_id=prof_courses['course_id'],
+            semester=prof_courses['semester'],
+            year=prof_courses['year'])
+        )
+        # sum of students professor teaches
+        count_students = len(student_course_data)
 
     # retrieves sum of funds for all professor's research
     y = 0
@@ -167,6 +169,7 @@ def professor_performance(request):  # Admin
     }
     return HttpResponse(template.render(context, request))
 
+
 # Feature 4
 def course_prof(request): # instructor
     # request from F4 text field
@@ -188,6 +191,7 @@ def course_prof(request): # instructor
         'rows': data,
     }
     return render(request, 'univdb/instructor/course_prof.html', context=context)
+
 
 # Feature 5
 def student_list(request): # instructor
