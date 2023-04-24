@@ -10,8 +10,8 @@ urlpatterns = [
     path('', views.login, name='login'),  # login page
     path('handlelogin/', views.handle_login, name='handle_login'),
     path('instructor/', views.instructor, name='instructor'),
-    path('instructor/course_prof', views.course_prof, name='course_prof'),
-    path('instructor/student_list', views.student_list, name='student_list'),
+    #path('instructor/course_prof', views.course_prof, name='course_prof'),
+    #path('instructor/student_list', views.student_list, name='student_list'),
     path('student/', views.index_student, name='student'),
     path('student/courses', views.course_offerings, name='courses'),
 ]

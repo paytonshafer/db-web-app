@@ -5,22 +5,43 @@
 <h1>Instructor</h1>
 <h2>F4: Create the list of course sections and the number of students enrolled in each section that the professor taught in a given semester and year</h2>
 
-<h4>Input the professor's last name that you want to search by:</h4>
+<table style="width:400px">
+    <tr>
+        <th>course_id</th>
+        <th>sec_id</th>
+        <th>semester</th>
+        <th>year</th>
+        <th>number_of_students_enrolled</th>
+    </tr>
+ {% for r in f4data %}
+    <tr>
+        <th>{{ r.0 }}</th>
+        <th>{{ r.1 }}</th>
+        <th>{{ r.2 }}</th>
+        <th>{{ r.3 }}</th>
+        <th>{{ r.4 }}</th>
+    </tr>
+ {% endfor %}
+</table>
 
-<form action="{% url 'course_prof' %}" method="get">
-    <input type="text" name ="proflname" placeholder="Ex: Hou" >
-    <input type="submit" value="Done"> <br>
-</form>
 <br> <br> <br>
 
 <h2>F5: Create the list of students enrolled in a course section taught by the professor in a given semester and year</h2>
 
-<h4>Input the professor's last name that you want to search by:</h4>
-
-<form action="{% url 'student_list' %}" method="get">
-    <input type="text" name ="proflname" placeholder="Ex: Bob" >
-    <input type="submit" value="Done"> <br>
-</form>
+<table style="width:400px">
+    <tr>
+        <th>name</th>
+        <th>semester</th>
+        <th>year</th>
+    </tr>
+ {% for r in f5data %}
+    <tr>
+        <th>{{ r.0 }}</th>
+        <th>{{ r.1 }}</th>
+        <th>{{ r.2 }}</th>
+    </tr>
+ {% endfor %}
+</table>
 
 <br></br>
 <button onClick="javascript:history.go(-1);">logout</button>
