@@ -1,5 +1,6 @@
+from django.contrib.auth import authenticate
 from django.db.models import Min, Max, Avg
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import mysql.connector
 
 # Create your views here.
@@ -20,15 +21,14 @@ mydb = mysql.connector.connect(
 # get cursor for database
 mycursor = mydb.cursor()
 
-
-# Create your views here.
-def index_student(request):  # Admin
+#student home
+def index_student(request): 
     template = loader.get_template('univdb/student/form.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-
+#f6
 def course_offerings(request):
     year = request.GET.get('year')
     semester = request.GET.get('semester')
@@ -50,15 +50,33 @@ def course_offerings(request):
 
     return HttpResponse(template.render(context, request))
 
+#handle login routing
+def handle_login(request):
+    username = request.GET.get('uname')
+    password = request.GET.get('psw')
 
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        group = str(user.groups.all()[0])
+        if group == 'admin':
+            response = redirect('/univdb/admin')
+        if group == 'instructor':
+            response = redirect('/univdb/instructor?user=' + username)
+        if group == 'student':
+            response = redirect('/univdb/student')
+    else:
+        response = redirect('/univdb/')
+        
+    return response
+        
+#login page
 def login(request):
-    return HttpResponse("Hello, world.\n")
+    template = loader.get_template('univdb/login.html')
+    context = {}
 
+    return HttpResponse(template.render(context, request))
 
-def instructor(request):
-    return render(request, 'univdb/instructor/home.html')
-
-
+#admin home
 def index_admin(request):  # Admin
     template = loader.get_template('univdb/admin/form.html')
     context = {}
@@ -173,15 +191,8 @@ def professor_performance(request):  # Admin
 
 
 # Feature 4
-def course_prof(request):  # instructor
-    # request from F4 text field
-    name = request.GET.get("proflname")
 
-    # gets the first query in query set of the id of the professor given the last name
-    prof_id = Instructor.objects.filter(name=name).values('id').first()
-
-    # transform id into a string
-    prof_id = str(prof_id.get('id'))
+def course_prof(prof_id): # instructor
 
     # does the SQL selection given the instructor
     sql = 'SELECT teaches.course_id, teaches.sec_id, teaches.semester, teaches.year, COUNT(student_id) FROM teaches INNER JOIN takes on ( takes.course_id = teaches.course_id AND takes.semester = teaches.semester AND takes.sec_id = teaches.sec_id AND takes.year = teaches.year ) WHERE teacher_id = "' + prof_id + '" GROUP BY course_id, sec_id, semester, year;'
@@ -189,22 +200,10 @@ def course_prof(request):  # instructor
     mycursor.execute(sql)  # execute sql query on db instance
     data = mycursor.fetchall()  # get all results
 
-    context = {
-        'rows': data,
-    }
-    return render(request, 'univdb/instructor/course_prof.html', context=context)
-
+    return data
 
 # Feature 5
-def student_list(request):  # instructor
-    # request from F5 textfield
-    name = request.GET.get("proflname")
-
-    # gets the first query in query set of the id of the professor given the last name
-    prof_id = Instructor.objects.filter(name=name).values('id').first()
-
-    # transform id into a string
-    prof_id = str(prof_id.get('id'))
+def student_list(prof_id): # instructor
 
     # does the SQL selection given the instructor
     sql = 'SELECT student.name, teaches.semester, teaches.year FROM teaches INNER JOIN takes on (  takes.course_id = teaches.course_id AND takes.semester = teaches.semester AND takes.sec_id = teaches.sec_id AND takes.year = teaches.year) INNER JOIN student on takes.student_id = student.student_id WHERE teacher_id = "' + prof_id + '";'
@@ -212,8 +211,22 @@ def student_list(request):  # instructor
     mycursor.execute(sql)  # execute sql query on db instance
     data = mycursor.fetchall()  # get all results
 
-    context = {
-        'rows': data,
-    }
+    return data
 
-    return render(request, 'univdb/instructor/student_list.html', context=context)
+def instructor(request):
+    template = loader.get_template('univdb/instructor/home.html')
+
+    user = request.GET.get('user')
+
+    prof_id = Instructor.objects.filter(name = user).values('id').first()
+    # transform id into a string
+    prof_id = str(prof_id.get('id'))
+
+    f4data = course_prof(prof_id)
+    f5data = student_list(prof_id)
+
+    context = {
+        'f4data': f4data,
+        'f5data': f5data
+    }
+    return  HttpResponse(template.render(context, request))
