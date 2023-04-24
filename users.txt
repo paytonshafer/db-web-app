@@ -1,0 +1,11 @@
+Admin:
+admin
+password
+
+Instructor:
+hou
+database
+
+Student:
+student
+database

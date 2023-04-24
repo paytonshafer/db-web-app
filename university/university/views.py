@@ -1,5 +1,7 @@
 from django.http import HttpResponse
+from django.shortcuts import redirect
 
 
 def index(request):
-    return HttpResponse("Hello, world. \nAgain")
+    response = redirect('/univdb/')
+    return response

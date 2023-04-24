@@ -9,37 +9,37 @@ from django.template import loader
 
 from .models import Dept, Instructor, Teaches, Takes, ResearchFunds, Published, Student
 
-
 mydb = mysql.connector.connect(
-  host="128.153.13.175",
-  port= 3306,
-  user="group_b",
-  passwd='PayJefJosLog',
-  auth_plugin='mysql_native_password',
-  database="university_group_b",
+    host="128.153.13.175",
+    port=3306,
+    user="group_b",
+    passwd='PayJefJosLog',
+    auth_plugin='mysql_native_password',
+    database="university_group_b",
 )
 
-#get cursor for database
+# get cursor for database
 mycursor = mydb.cursor()
 
-# Create your views here.
-def index_student(request):  # Admin
+#student home
+def index_student(request): 
     template = loader.get_template('univdb/student/form.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
+#f6
 def course_offerings(request):
     year = request.GET.get('year')
     semester = request.GET.get('semester')
-    #SELECT dept, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = 2019 and semester = 1 order by dept;
+    # SELECT dept, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = 2019 and semester = 1 order by dept;
     if semester == 'fall':
-        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = '  + year + ' and semester = 1 order by dept_name;'
-    else: #semester == 'spring'
-        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = '  + year + ' and semester = 2 order by dept_name;'
+        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = ' + year + ' and semester = 1 order by dept_name;'
+    else:  # semester == 'spring'
+        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = ' + year + ' and semester = 2 order by dept_name;'
 
-    mycursor.execute(sql) #execte sql query on db instance
-    data = mycursor.fetchall() #get all results
+    mycursor.execute(sql)  # execte sql query on db instance
+    data = mycursor.fetchall()  # get all results
 
     template = loader.get_template('univdb/student/course_offerings.html')
     context = {
@@ -50,7 +50,7 @@ def course_offerings(request):
 
     return HttpResponse(template.render(context, request))
 
-#TODO: Route everything properly
+#handle login routing
 def handle_login(request):
     username = request.GET.get('uname')
     password = request.GET.get('psw')
@@ -61,7 +61,8 @@ def handle_login(request):
         if group == 'admin':
             response = redirect('/univdb/admin')
         if group == 'instructor':
-            response = redirect('/univdb/instructor?user=' + username)
+            request.session['user'] = user
+            response = redirect('/univdb/instructor)
         if group == 'student':
             response = redirect('/univdb/student')
     else:
@@ -69,14 +70,14 @@ def handle_login(request):
         
     return response
         
-
+#login page
 def login(request):
     template = loader.get_template('univdb/login.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-
+'''
 def instructor(request):
     # get user info
     user = request.GET.get("user")
@@ -84,8 +85,9 @@ def instructor(request):
     # store user in session
     request.session['user'] = user
     return render(request, 'univdb/instructor/home.html')
+'''
 
-
+#admin home
 def index_admin(request):  # Admin
     template = loader.get_template('univdb/admin/form.html')
     context = {}
@@ -147,28 +149,30 @@ def professor_performance(request):  # Admin
     # sum of courses professor teaches
     count_class = len(prof_course_data)
 
-    # establish variable used in for loop
-    x = 0
-    prof_courses = prof_course_data.values()[x]
-    student_course_data = (Takes.objects.filter(
-        course_id=prof_courses['course_id'],
-        semester=prof_courses['semester'],
-        year=prof_courses['year'])
-    )
-
-    # retrieve all students taking professor's courses
-    for i in prof_course_data:
-        x = x + 1
-        if x < count_class:
-            prof_courses = prof_course_data.values()[x]
+    # if statement to prevent going out of bounds
+    if count_class == 0:
+        count_students = 0
+    else:
+        x = 0
+        # establish variable used in for loop
+        prof_courses = prof_course_data.values()[x]
+        student_course_data = (Takes.objects.filter(
+            course_id=prof_courses['course_id'],
+            semester=prof_courses['semester'],
+            year=prof_courses['year'])
+        )
+        # retrieve all students taking professor's courses
+        for i in prof_course_data:
+            x = x + 1
+            if x < count_class:
+                prof_courses = prof_course_data.values()[x]
             student_course_data = student_course_data | (Takes.objects.filter(
                 course_id=prof_courses['course_id'],
                 semester=prof_courses['semester'],
                 year=prof_courses['year'])
             )
-
-    # sum of students professor teaches
-    count_students = len(student_course_data)
+        # sum of students professor teaches
+        count_students = len(student_course_data)
 
     # retrieves sum of funds for all professor's research
     y = 0
@@ -196,17 +200,16 @@ def professor_performance(request):  # Admin
     }
     return HttpResponse(template.render(context, request))
 
+'''
 # Feature 4
 def course_prof(request): # instructor
     # request from session for user
     # name = request.GET.get("proflname") old code fo textfield
     name = request.session.get('user')
+'''
 
-    # gets the first query in query set of the id of the professor given the last name
-    prof_id = Instructor.objects.filter(name = name).values('id').first()
-
-    # transform id into a string
-    prof_id = str(prof_id.get('id'))
+# Feature 4
+def course_prof(prof_id): # instructor
 
     # does the SQL selection given the instructor
     sql = 'SELECT teaches.course_id, teaches.sec_id, teaches.semester, teaches.year, COUNT(student_id) FROM teaches INNER JOIN takes on ( takes.course_id = teaches.course_id AND takes.semester = teaches.semester AND takes.sec_id = teaches.sec_id AND takes.year = teaches.year ) WHERE teacher_id = "' + prof_id + '" GROUP BY course_id, sec_id, semester, year;'
@@ -214,13 +217,12 @@ def course_prof(request): # instructor
     mycursor.execute(sql)  # execute sql query on db instance
     data = mycursor.fetchall()  # get all results
 
-    context = {
-        'rows': data,
-    }
-    return render(request, 'univdb/instructor/course_prof.html', context=context)
+    return data
 
 # Feature 5
+'''
 def student_list(request): # instructor
+
     # request from session for user
     # name = request.GET.get("proflname") old code for textfield
     name = request.session.get('user')
@@ -230,6 +232,8 @@ def student_list(request): # instructor
 
     # transform id into a string
     prof_id = str(prof_id.get('id'))
+ '''
+def student_list(prof_id): # instructor
 
     # does the SQL selection given the instructor
     sql = 'SELECT student.name, teaches.semester, teaches.year FROM teaches INNER JOIN takes on (  takes.course_id = teaches.course_id AND takes.semester = teaches.semester AND takes.sec_id = teaches.sec_id AND takes.year = teaches.year) INNER JOIN student on takes.student_id = student.student_id WHERE teacher_id = "' + prof_id + '";'
@@ -237,8 +241,23 @@ def student_list(request): # instructor
     mycursor.execute(sql)  # execute sql query on db instance
     data = mycursor.fetchall()  # get all results
 
-    context = {
-        'rows': data,
-    }
+    return data
 
-    return render(request, 'univdb/instructor/student_list.html', context=context)
+def instructor(request):
+    template = loader.get_template('univdb/instructor/home.html')
+
+    user = request.session.get('user')
+    
+
+    prof_id = Instructor.objects.filter(name = user).values('id').first()
+    # transform id into a string
+    prof_id = str(prof_id.get('id'))
+
+    f4data = course_prof(prof_id)
+    f5data = student_list(prof_id)
+
+    context = {
+        'f4data': f4data,
+        'f5data': f5data
+    }
+    return  HttpResponse(template.render(context, request))
