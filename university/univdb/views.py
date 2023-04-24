@@ -8,18 +8,18 @@ from django.template import loader
 
 from .models import Dept, Instructor, Teaches, Takes, ResearchFunds, Published, Student
 
-
 mydb = mysql.connector.connect(
-  host="128.153.13.175",
-  port= 3306,
-  user="group_b",
-  passwd='PayJefJosLog',
-  auth_plugin='mysql_native_password',
-  database="university_group_b",
+    host="128.153.13.175",
+    port=3306,
+    user="group_b",
+    passwd='PayJefJosLog',
+    auth_plugin='mysql_native_password',
+    database="university_group_b",
 )
 
-#get cursor for database
+# get cursor for database
 mycursor = mydb.cursor()
+
 
 # Create your views here.
 def index_student(request):  # Admin
@@ -28,17 +28,18 @@ def index_student(request):  # Admin
 
     return HttpResponse(template.render(context, request))
 
+
 def course_offerings(request):
     year = request.GET.get('year')
     semester = request.GET.get('semester')
-    #SELECT dept, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = 2019 and semester = 1 order by dept;
+    # SELECT dept, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = 2019 and semester = 1 order by dept;
     if semester == 'fall':
-        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = '  + year + ' and semester = 1 order by dept_name;'
-    else: #semester == 'spring'
-        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = '  + year + ' and semester = 2 order by dept_name;'
+        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = ' + year + ' and semester = 1 order by dept_name;'
+    else:  # semester == 'spring'
+        sql = 'SELECT dept_name, section.course_id, title, sec_id, building, room, credits from section join course on section.course_id = course.course_id where year = ' + year + ' and semester = 2 order by dept_name;'
 
-    mycursor.execute(sql) #execte sql query on db instance
-    data = mycursor.fetchall() #get all results
+    mycursor.execute(sql)  # execte sql query on db instance
+    data = mycursor.fetchall()  # get all results
 
     template = loader.get_template('univdb/student/course_offerings.html')
     context = {
@@ -48,6 +49,7 @@ def course_offerings(request):
     }
 
     return HttpResponse(template.render(context, request))
+
 
 def login(request):
     return HttpResponse("Hello, world.\n")
@@ -133,13 +135,13 @@ def professor_performance(request):  # Admin
         # retrieve all students taking professor's courses
         for i in prof_course_data:
             x = x + 1
-        if x < count_class:
-            prof_courses = prof_course_data.values()[x]
-        student_course_data = student_course_data | (Takes.objects.filter(
-            course_id=prof_courses['course_id'],
-            semester=prof_courses['semester'],
-            year=prof_courses['year'])
-        )
+            if x < count_class:
+                prof_courses = prof_course_data.values()[x]
+            student_course_data = student_course_data | (Takes.objects.filter(
+                course_id=prof_courses['course_id'],
+                semester=prof_courses['semester'],
+                year=prof_courses['year'])
+            )
         # sum of students professor teaches
         count_students = len(student_course_data)
 
@@ -171,12 +173,12 @@ def professor_performance(request):  # Admin
 
 
 # Feature 4
-def course_prof(request): # instructor
+def course_prof(request):  # instructor
     # request from F4 text field
     name = request.GET.get("proflname")
 
     # gets the first query in query set of the id of the professor given the last name
-    prof_id = Instructor.objects.filter(name = name).values('id').first()
+    prof_id = Instructor.objects.filter(name=name).values('id').first()
 
     # transform id into a string
     prof_id = str(prof_id.get('id'))
@@ -194,7 +196,7 @@ def course_prof(request): # instructor
 
 
 # Feature 5
-def student_list(request): # instructor
+def student_list(request):  # instructor
     # request from F5 textfield
     name = request.GET.get("proflname")
 
