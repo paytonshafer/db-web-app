@@ -78,6 +78,11 @@ def login(request):
 
 
 def instructor(request):
+    # get user info
+    user = request.GET.get("user")
+
+    # store user in session
+    request.session['user'] = user
     return render(request, 'univdb/instructor/home.html')
 
 
@@ -193,8 +198,9 @@ def professor_performance(request):  # Admin
 
 # Feature 4
 def course_prof(request): # instructor
-    # request from F4 text field
-    name = request.GET.get("proflname")
+    # request from session for user
+    # name = request.GET.get("proflname") old code fo textfield
+    name = request.session.get('user')
 
     # gets the first query in query set of the id of the professor given the last name
     prof_id = Instructor.objects.filter(name = name).values('id').first()
@@ -215,8 +221,9 @@ def course_prof(request): # instructor
 
 # Feature 5
 def student_list(request): # instructor
-    # request from F5 textfield
-    name = request.GET.get("proflname")
+    # request from session for user
+    # name = request.GET.get("proflname") old code for textfield
+    name = request.session.get('user')
 
     # gets the first query in query set of the id of the professor given the last name
     prof_id = Instructor.objects.filter(name=name).values('id').first()
