@@ -61,7 +61,8 @@ def handle_login(request):
         if group == 'admin':
             response = redirect('/univdb/admin')
         if group == 'instructor':
-            response = redirect('/univdb/instructor?user=' + username)
+            request.session['user'] = user
+            response = redirect('/univdb/instructor)
         if group == 'student':
             response = redirect('/univdb/student')
     else:
@@ -75,6 +76,16 @@ def login(request):
     context = {}
 
     return HttpResponse(template.render(context, request))
+
+'''
+def instructor(request):
+    # get user info
+    user = request.GET.get("user")
+
+    # store user in session
+    request.session['user'] = user
+    return render(request, 'univdb/instructor/home.html')
+'''
 
 #admin home
 def index_admin(request):  # Admin
@@ -189,9 +200,15 @@ def professor_performance(request):  # Admin
     }
     return HttpResponse(template.render(context, request))
 
+'''
+# Feature 4
+def course_prof(request): # instructor
+    # request from session for user
+    # name = request.GET.get("proflname") old code fo textfield
+    name = request.session.get('user')
+'''
 
 # Feature 4
-
 def course_prof(prof_id): # instructor
 
     # does the SQL selection given the instructor
@@ -203,6 +220,19 @@ def course_prof(prof_id): # instructor
     return data
 
 # Feature 5
+'''
+def student_list(request): # instructor
+
+    # request from session for user
+    # name = request.GET.get("proflname") old code for textfield
+    name = request.session.get('user')
+
+    # gets the first query in query set of the id of the professor given the last name
+    prof_id = Instructor.objects.filter(name=name).values('id').first()
+
+    # transform id into a string
+    prof_id = str(prof_id.get('id'))
+ '''
 def student_list(prof_id): # instructor
 
     # does the SQL selection given the instructor
@@ -216,7 +246,8 @@ def student_list(prof_id): # instructor
 def instructor(request):
     template = loader.get_template('univdb/instructor/home.html')
 
-    user = request.GET.get('user')
+    user = request.session.get('user')
+    
 
     prof_id = Instructor.objects.filter(name = user).values('id').first()
     # transform id into a string
