@@ -61,8 +61,8 @@ def handle_login(request):
         if group == 'admin':
             response = redirect('/univdb/admin')
         if group == 'instructor':
-            request.session['user'] = user
-            response = redirect('/univdb/instructor)
+            request.session['user'] = user.username
+            response = redirect('/univdb/instructor')
         if group == 'student':
             response = redirect('/univdb/student')
     else:
